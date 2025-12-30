@@ -5,7 +5,6 @@ import FundingRateChart from "@/components/FundingRateChart";
 import FundingIncomeChart from "@/components/FundingIncomeChart";
 import PriceChart from "@/components/PriceChart";
 import TokenSelector from "@/components/TokenSelector";
-import ApiKeyConfig from "@/components/ApiKeyConfig";
 import TimeRangeSelector from "@/components/TimeRangeSelector";
 import FundingCalculator from "@/components/FundingCalculator";
 import {
@@ -14,7 +13,6 @@ import {
   ChartDataPoint,
   IncomeDataPoint,
   PriceDataPoint,
-  ApiCredentials,
 } from "@/lib/types";
 
 const DEFAULT_TOKENS = ["0GUSDT"];
@@ -111,7 +109,6 @@ export default function Home() {
   const [tokens, setTokens] = useState<string[]>(DEFAULT_TOKENS);
   const [selectedToken, setSelectedToken] = useState<string>(DEFAULT_TOKENS[0]);
   const [timeRange, setTimeRange] = useState<string>("30d");
-  const [credentials, setCredentials] = useState<ApiCredentials | null>(null);
 
   const [fundingRateData, setFundingRateData] = useState<ChartDataPoint[]>([]);
   const [allFundingRateData, setAllFundingRateData] = useState<ChartDataPoint[]>([]);
@@ -122,16 +119,11 @@ export default function Home() {
 
   useEffect(() => {
     const savedTokens = localStorage.getItem("fundingrate-tokens");
-    const savedCredentials = localStorage.getItem("fundingrate-credentials");
 
     if (savedTokens) {
       const parsed = JSON.parse(savedTokens);
       setTokens(parsed);
       setSelectedToken(parsed[0]);
-    }
-
-    if (savedCredentials) {
-      setCredentials(JSON.parse(savedCredentials));
     }
   }, []);
 
@@ -232,16 +224,6 @@ export default function Home() {
     localStorage.setItem("fundingrate-tokens", JSON.stringify(newTokens));
   };
 
-  const handleSaveCredentials = (creds: ApiCredentials) => {
-    setCredentials(creds);
-    localStorage.setItem("fundingrate-credentials", JSON.stringify(creds));
-  };
-
-  const handleClearCredentials = () => {
-    setCredentials(null);
-    localStorage.removeItem("fundingrate-credentials");
-  };
-
   // Calculate summary stats
   const latestRate = fundingRateData.length > 0 ? fundingRateData[fundingRateData.length - 1] : null;
   const latestPrice = priceData.length > 0 ? priceData[priceData.length - 1] : null;
@@ -253,18 +235,11 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-              Funding Rate Tracker
-            </h1>
-            <p className="text-gray-400 mt-1">Monitor perpetual futures funding rates</p>
-          </div>
-          <ApiKeyConfig
-            credentials={credentials}
-            onSave={handleSaveCredentials}
-            onClear={handleClearCredentials}
-          />
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+            Funding Rate Tracker
+          </h1>
+          <p className="text-gray-400 mt-1">Monitor perpetual futures funding rates</p>
         </div>
 
         {/* Controls */}

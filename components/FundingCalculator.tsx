@@ -334,24 +334,6 @@ export default function FundingCalculator({
         </p>
       </div>
 
-      {/* Debug Info */}
-      <div className="mt-4 p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-xs font-mono">
-        <div className="text-gray-400 mb-2">Debug Info:</div>
-        <div className="grid grid-cols-2 gap-2 text-gray-500">
-          <div>Data points received: {fundingRateData.length}</div>
-          <div>Start date filter: {startDate}</div>
-          <div>
-            First data point: {fundingRateData[0] ? new Date(fundingRateData[0].time).toLocaleDateString() : "N/A"}
-          </div>
-          <div>
-            Last data point: {fundingRateData[fundingRateData.length - 1] ? new Date(fundingRateData[fundingRateData.length - 1].time).toLocaleDateString() : "N/A"}
-          </div>
-          <div>Points after filter: {calculation.dataPointsUsed}</div>
-          <div>
-            Sample rate: {fundingRateData[0] ? `${(fundingRateData[0].fundingRate * 100).toFixed(4)}%` : "N/A"}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
