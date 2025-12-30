@@ -3,6 +3,20 @@ import { FundingRate, FundingIncome, Kline } from "./types";
 
 const BINANCE_FAPI_BASE = "https://fapi.binance.com";
 
+// Retry fetch with exponential backoff
+async function fetchWithRetry(url: string, options?: RequestInit, retries = 3): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      return response;
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+  throw new Error("Max retries reached");
+}
+
 export function generateSignature(queryString: string, apiSecret: string): string {
   return crypto
     .createHmac("sha256", apiSecret)
@@ -24,7 +38,7 @@ export async function getFundingRateHistory(
   if (startTime) params.append("startTime", startTime.toString());
   if (endTime) params.append("endTime", endTime.toString());
 
-  const response = await fetch(
+  const response = await fetchWithRetry(
     `${BINANCE_FAPI_BASE}/fapi/v1/fundingRate?${params.toString()}`
   );
 
@@ -52,7 +66,7 @@ export async function getKlines(
   if (startTime) params.append("startTime", startTime.toString());
   if (endTime) params.append("endTime", endTime.toString());
 
-  const response = await fetch(
+  const response = await fetchWithRetry(
     `${BINANCE_FAPI_BASE}/fapi/v1/klines?${params.toString()}`
   );
 
@@ -97,7 +111,7 @@ export async function getFundingIncome(
   const signature = generateSignature(params.toString(), apiSecret);
   params.append("signature", signature);
 
-  const response = await fetch(
+  const response = await fetchWithRetry(
     `${BINANCE_FAPI_BASE}/fapi/v1/income?${params.toString()}`,
     {
       headers: {

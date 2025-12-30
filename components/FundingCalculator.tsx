@@ -233,18 +233,15 @@ export default function FundingCalculator({
         {/* Leverage */}
         <div className="space-y-2">
           <label className="text-sm text-gray-400 block">Leverage</label>
-          <div className="relative">
-            <input
-              type="number"
-              value={leverage}
-              onChange={(e) => setLeverage(e.target.value)}
-              className="w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
-              placeholder="1"
-              min="1"
-              max="125"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">x</span>
-          </div>
+          <input
+            type="number"
+            value={leverage}
+            onChange={(e) => setLeverage(e.target.value)}
+            className="w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
+            placeholder="1"
+            min="1"
+            max="125"
+          />
         </div>
 
         {/* Start Date */}
